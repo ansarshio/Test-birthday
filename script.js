@@ -1,4 +1,4 @@
-// ---------- 1. BACKGROUND PARTICLES (gentle sparkle) ----------
+// ----------------------------- 1. BACKGROUND PARTICLES -----------------------------
 const canvas = document.getElementById('bg-canvas');
 const ctx = canvas.getContext('2d');
 let particles = [];
@@ -78,7 +78,7 @@ function animateParticles() {
 initParticles();
 animateParticles();
 
-// ---------- 2. CONFETTI ----------
+// ----------------------------- 2. CONFETTI -----------------------------
 (function() {
   window.confetti = window.confetti || function(options) {
     const defaults = { particleCount: 50, spread: 45, startVelocity: 15, origin: { x: 0.5, y: 0.5 }, colors: ['#FFB7C5', '#FF85A1', '#FF4D6D'], decay: 0.9, ticks: 200, gravity: 1 };
@@ -132,8 +132,8 @@ function triggerConfetti() {
   }
 }
 
-// ---------- 3. TYPEWRITER EFFECT ----------
-async function typewriter(element, text, speed = 55) {
+// ----------------------------- 3. TYPEWRITER EFFECTS -----------------------------
+async function typewriter(element, text, speed = 60) {
   element.textContent = '';
   for (let i = 0; i < text.length; i++) {
     element.textContent += text.charAt(i);
@@ -145,65 +145,23 @@ async function typewriter(element, text, speed = 55) {
 const page1Message = "🌸 Having you as my best friend makes every day special. So grateful for you! 🌸";
 const p1Container = document.getElementById('typewriter-message-p1');
 
-// ----- RANDOM MESSAGE POOL (10 options) -----
-const messagePool = [
-  "✨ You are truly one of the most amazing souls I've ever met. Every laugh, every late-night conversation, every moment of your support has made me a better person. 💕",
-  "🌈 I'm so grateful that life brought us together. You make ordinary days feel special, and you've shown me what true friendship means.",
-  "🎂 On your birthday, I just want you to know: you're cherished, you're important, and you'll always have me cheering for you. 🎈",
-  "💖 No matter where life takes us, you'll always be my favorite human. Thank you for being you — authentic, kind, and pure magic. 🌟",
-  "🌻 Every memory with you is a treasure. You’ve turned my lows into laughter and my joys into fireworks. Best friends forever! 🦋",
-  "⭐ You are the definition of a blessing. Thank you for sticking by me through thick and thin. Today, we celebrate YOU! 🥳",
-  "🌸 Your smile lights up the world. I hope this year brings you everything you've ever wished for and more. Love you, bestie! 💐",
-  "🍀 You make my world brighter just by being in it. Cheers to another year of adventures, inside jokes, and endless support. 🎉",
-  "💎 Friendship like ours is rare — a diamond in the rough. I promise to always have your back, today and always. 🎂",
-  "🌙 You're the peanut butter to my jelly, the sparkle to my star. Happiest birthday to my absolute rock! ✨💗"
+// Page 2 paragraphs (original texts)
+const originalParagraphs = [
+  "You are truly one of the most amazing souls I've ever met. Every laugh, every late-night conversation, every moment of your support has made me a better person. 💕",
+  "I'm so grateful that life brought us together. You make ordinary days feel special, and you've shown me what true friendship means.",
+  "On your birthday, I just want you to know: you're cherished, you're important, and you'll always have me cheering for you. 🎂✨"
 ];
 
-function getRandomMessages(count = 3) {
-  const shuffled = [...messagePool];
-  for (let i = shuffled.length - 1; i > 0; i--) {
+// Function to shuffle array (random order)
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
-  return shuffled.slice(0, count);
+  return arr;
 }
 
-let page2TypingStarted = false;
-let currentRandomMessages = [];
-
-async function startPage2Typewriter() {
-  if (page2TypingStarted) return;
-  page2TypingStarted = true;
-  
-  currentRandomMessages = getRandomMessages(3);
-  
-  const line1 = document.getElementById('p2-line1');
-  const line2 = document.getElementById('p2-line2');
-  const line3 = document.getElementById('p2-line3');
-  
-  await typewriter(line1, currentRandomMessages[0], 42);
-  await typewriter(line2, currentRandomMessages[1], 42);
-  await typewriter(line3, currentRandomMessages[2], 42);
-}
-
-function resetPage2Typewriter() {
-  page2TypingStarted = false;
-  const line1 = document.getElementById('p2-line1');
-  const line2 = document.getElementById('p2-line2');
-  const line3 = document.getElementById('p2-line3');
-  line1.textContent = '';
-  line2.textContent = '';
-  line3.textContent = '';
-}
-
-// ---------- 4. PAGE SWITCH LOGIC ----------
-const page1 = document.getElementById('page1');
-const page2 = document.getElementById('page2');
-const nextBtn = document.getElementById('nextBtn');
-const backBtn = document.getElementById('backHome');
-const popAudio = document.getElementById('pop-sound');
-
-// On page load: start page1 typewriter and a small confetti
+// Start page 1 typewriter on load
 window.addEventListener('load', () => {
   typewriter(p1Container, page1Message, 55);
   setTimeout(() => {
@@ -211,29 +169,60 @@ window.addEventListener('load', () => {
   }, 500);
 });
 
+// ----------------------------- 4. PAGE SWITCH & PAGE 2 TYPEWRITER (RANDOM ORDER) -----------------------------
+const page1 = document.getElementById('page1');
+const page2 = document.getElementById('page2');
+const nextBtn = document.getElementById('nextBtn');
+const backBtn = document.getElementById('backHome');
+const popAudio = document.getElementById('pop-sound');
+
+let page2TypingStarted = false;
+
+async function startPage2Typewriter() {
+  if (page2TypingStarted) return;
+  page2TypingStarted = true;
+  
+  // Create a shuffled copy of the paragraphs
+  const shuffled = shuffleArray([...originalParagraphs]);
+  
+  const line1 = document.getElementById('p2-line1');
+  const line2 = document.getElementById('p2-line2');
+  const line3 = document.getElementById('p2-line3');
+  
+  // Write them in the new random order
+  await typewriter(line1, shuffled[0], 40);
+  await typewriter(line2, shuffled[1], 40);
+  await typewriter(line3, shuffled[2], 40);
+}
+
 nextBtn.addEventListener('click', () => {
-  popAudio.play().catch(e => console.log);
+  popAudio.play().catch(e=>console.log);
   triggerConfetti();
   nextBtn.style.transform = 'scale(0.95)';
   setTimeout(() => nextBtn.style.transform = '', 200);
-  
   setTimeout(() => {
     page1.classList.add('hidden');
     page2.classList.remove('hidden');
-    resetPage2Typewriter();    // clear old text
-    startPage2Typewriter();    // write fresh random messages
-    confetti({ particleCount: 180, spread: 90, origin: { y: 0.5 } });
+    startPage2Typewriter();
+    confetti({ particleCount: 150, spread: 90, origin: { y: 0.5 } });
   }, 400);
 });
 
 backBtn.addEventListener('click', () => {
   page2.classList.add('hidden');
   page1.classList.remove('hidden');
-  resetPage2Typewriter();      // so next time new random messages appear
-  confetti({ particleCount: 70, spread: 70, origin: { y: 0.6 } });
+  // Reset for next time (so random order can happen again)
+  page2TypingStarted = false;
+  const line1 = document.getElementById('p2-line1');
+  const line2 = document.getElementById('p2-line2');
+  const line3 = document.getElementById('p2-line3');
+  line1.textContent = '';
+  line2.textContent = '';
+  line3.textContent = '';
+  confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
 });
 
-// ---------- 5. FLOATING HEARTS (reduced count) ----------
+// ----------------------------- 5. FLOATING HEARTS (REDUCED) -----------------------------
 function createFloatingHearts() {
   const container = document.createElement('div');
   container.style.position = 'fixed';
@@ -246,7 +235,7 @@ function createFloatingHearts() {
   document.body.appendChild(container);
   
   const emojis = ['🌹', '💖', '🌸', '💕', '✨', '🎈', '💗'];
-  const count = 28;   // fewer hearts
+  const count = 28;
   for (let i = 0; i < count; i++) {
     const heart = document.createElement('div');
     heart.classList.add('floating-heart');
