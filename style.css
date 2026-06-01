@@ -132,8 +132,34 @@ body {
   line-height: 1.4;
 }
 
-/* NEXT BUTTON */
-.next-btn, .back-home {
+/* NEXT BUTTON – pink background with ✨ */
+.next-btn {
+  margin-top: 1.8rem;
+  padding: 0.9rem 2.2rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  border: none;
+  background: #ff66b2;
+  background: linear-gradient(135deg, #ff80bf, #ff4d94);
+  color: white;
+  border-radius: 60px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(255, 80, 120, 0.5);
+  font-family: 'Quicksand', sans-serif;
+  letter-spacing: 1px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.next-btn:hover {
+  transform: scale(1.05);
+  background: #ff3399;
+  background: linear-gradient(135deg, #ff99cc, #ff3388);
+  box-shadow: 0 12px 24px rgba(255, 60, 100, 0.6);
+}
+
+.back-home {
   margin-top: 1.8rem;
   padding: 0.8rem 2rem;
   font-size: 1.2rem;
@@ -147,7 +173,7 @@ body {
   box-shadow: 0 8px 18px rgba(255, 60, 100, 0.4);
   font-family: 'Quicksand', sans-serif;
 }
-.next-btn:hover, .back-home:hover {
+.back-home:hover {
   transform: scale(1.05);
   background: linear-gradient(135deg, #ffb3c6, #ff3366);
 }
@@ -213,6 +239,7 @@ body {
 @media (max-width: 650px) {
   .pacifico-message { font-size: 1rem; padding: 0.8rem 1rem; }
   .heartfelt-text { font-size: 0.95rem; }
-  .next-btn, .back-home { font-size: 0.9rem; padding: 0.6rem 1.2rem; }
+  .next-btn { font-size: 1.1rem; padding: 0.6rem 1.5rem; }
+  .back-home { font-size: 0.9rem; padding: 0.6rem 1.2rem; }
   .message-card { padding: 1.5rem; }
 }
