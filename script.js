@@ -132,27 +132,31 @@ function triggerConfetti() {
   }
 }
 
-// ----------------------------- 3. TYPEWRITER EFFECTS -----------------------------
-async function typewriter(element, text, speed = 60) {
-  element.textContent = '';
-  for (let i = 0; i < text.length; i++) {
-    element.textContent += text.charAt(i);
-    await new Promise(resolve => setTimeout(resolve, speed));
-  }
+// ----------------------------- 3. PAGE 1: RANDOM MESSAGE FROM 4-5 TEXTS -----------------------------
+const messageList = [
+  "🌸 You make my world brighter just by being in it. Happy Birthday, bestie! 🌸",
+  "🎂 Cheers to another year of amazing friendship! Love you loads! 🎂",
+  "💖 Every day with you is a gift. So grateful for you! 💖",
+  "✨ You're not just my best friend, you're my family. Happy Birthday! ✨",
+  "🌹 Sending you a giant hug and all my love on your special day! 🌹"
+];
+
+function getRandomMessage() {
+  const randomIndex = Math.floor(Math.random() * messageList.length);
+  return messageList[randomIndex];
 }
 
-// Page 1 message
-const page1Message = "🌸 Having you as my best friend makes every day special. So grateful for you! 🌸";
-const p1Container = document.getElementById('typewriter-message-p1');
+// Display random message in inbox-p1 instantly
+const inboxP1 = document.getElementById('inbox-p1');
+inboxP1.textContent = getRandomMessage();
 
-// Page 2 paragraphs (original texts)
+// ----------------------------- 4. PAGE 2: THREE PARAGRAPHS IN RANDOM ORDER (TYPEWRITER) -----------------------------
 const originalParagraphs = [
   "You are truly one of the most amazing souls I've ever met. Every laugh, every late-night conversation, every moment of your support has made me a better person. 💕",
   "I'm so grateful that life brought us together. You make ordinary days feel special, and you've shown me what true friendship means.",
   "On your birthday, I just want you to know: you're cherished, you're important, and you'll always have me cheering for you. 🎂✨"
 ];
 
-// Function to shuffle array (random order)
 function shuffleArray(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -161,20 +165,13 @@ function shuffleArray(arr) {
   return arr;
 }
 
-// Start page 1 typewriter on load
-window.addEventListener('load', () => {
-  typewriter(p1Container, page1Message, 55);
-  setTimeout(() => {
-    confetti({ particleCount: 80, spread: 60, origin: { y: 0.65 }, colors: ['#FFB7C5', '#FF85A1'] });
-  }, 500);
-});
-
-// ----------------------------- 4. PAGE SWITCH & PAGE 2 TYPEWRITER (RANDOM ORDER) -----------------------------
-const page1 = document.getElementById('page1');
-const page2 = document.getElementById('page2');
-const nextBtn = document.getElementById('nextBtn');
-const backBtn = document.getElementById('backHome');
-const popAudio = document.getElementById('pop-sound');
+async function typewriter(element, text, speed = 40) {
+  element.textContent = '';
+  for (let i = 0; i < text.length; i++) {
+    element.textContent += text.charAt(i);
+    await new Promise(resolve => setTimeout(resolve, speed));
+  }
+}
 
 let page2TypingStarted = false;
 
@@ -182,21 +179,25 @@ async function startPage2Typewriter() {
   if (page2TypingStarted) return;
   page2TypingStarted = true;
   
-  // Create a shuffled copy of the paragraphs
   const shuffled = shuffleArray([...originalParagraphs]);
-  
   const line1 = document.getElementById('p2-line1');
   const line2 = document.getElementById('p2-line2');
   const line3 = document.getElementById('p2-line3');
   
-  // Write them in the new random order
-  await typewriter(line1, shuffled[0], 40);
-  await typewriter(line2, shuffled[1], 40);
-  await typewriter(line3, shuffled[2], 40);
+  await typewriter(line1, shuffled[0], 35);
+  await typewriter(line2, shuffled[1], 35);
+  await typewriter(line3, shuffled[2], 35);
 }
 
+// ----------------------------- 5. PAGE SWITCH LOGIC -----------------------------
+const page1 = document.getElementById('page1');
+const page2 = document.getElementById('page2');
+const nextBtn = document.getElementById('nextBtn');
+const backBtn = document.getElementById('backHome');
+const popAudio = document.getElementById('pop-sound');
+
 nextBtn.addEventListener('click', () => {
-  popAudio.play().catch(e=>console.log);
+  popAudio.play().catch(e => console.log);
   triggerConfetti();
   nextBtn.style.transform = 'scale(0.95)';
   setTimeout(() => nextBtn.style.transform = '', 200);
@@ -211,7 +212,7 @@ nextBtn.addEventListener('click', () => {
 backBtn.addEventListener('click', () => {
   page2.classList.add('hidden');
   page1.classList.remove('hidden');
-  // Reset for next time (so random order can happen again)
+  // Reset page2 typing flag and clear lines for next time
   page2TypingStarted = false;
   const line1 = document.getElementById('p2-line1');
   const line2 = document.getElementById('p2-line2');
@@ -222,7 +223,7 @@ backBtn.addEventListener('click', () => {
   confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
 });
 
-// ----------------------------- 5. FLOATING HEARTS (REDUCED) -----------------------------
+// ----------------------------- 6. FLOATING HEARTS (REDUCED) -----------------------------
 function createFloatingHearts() {
   const container = document.createElement('div');
   container.style.position = 'fixed';
@@ -248,3 +249,10 @@ function createFloatingHearts() {
   }
 }
 createFloatingHearts();
+
+// Optional: initial confetti on load
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    confetti({ particleCount: 80, spread: 60, origin: { y: 0.65 }, colors: ['#FFB7C5', '#FF85A1'] });
+  }, 500);
+});
