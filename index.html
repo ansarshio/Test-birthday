@@ -6,12 +6,13 @@
   <title>✨ Bestie's Birthday Magic ✨</title>
   <style>
     /* ----------------------------------------------
-      STYLE.CSS - Complete design with animations, particles, hearts
+      COMPLETE STYLE - Birthday Wonderland
     ------------------------------------------------ */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      user-select: none; /* subtle but elegant */
     }
 
     body {
@@ -124,7 +125,7 @@
       to { width: 70%; opacity: 1; }
     }
 
-    /* MESSAGES CONTAINER & INBOX (single message box) */
+    /* MESSAGES CONTAINER */
     .messages-container {
       margin: 1.5rem auto;
       max-width: 750px;
@@ -145,16 +146,19 @@
       text-align: center;
       line-height: 1.4;
       transition: all 0.3s ease;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* NEXT BUTTON – pink background with sparkle */
+    /* BUTTONS */
     .next-btn {
       margin-top: 1.8rem;
       padding: 0.9rem 2.2rem;
       font-size: 1.4rem;
       font-weight: 700;
       border: none;
-      background: #ff66b2;
       background: linear-gradient(135deg, #ff80bf, #ff4d94);
       color: white;
       border-radius: 60px;
@@ -169,11 +173,9 @@
     }
     .next-btn:hover {
       transform: scale(1.05);
-      background: #ff3399;
       background: linear-gradient(135deg, #ff99cc, #ff3388);
       box-shadow: 0 12px 24px rgba(255, 60, 100, 0.6);
     }
-
     .back-home {
       margin-top: 1.8rem;
       padding: 0.8rem 2rem;
@@ -193,7 +195,7 @@
       background: linear-gradient(135deg, #ffb3c6, #ff3366);
     }
 
-    /* PAGE 2 CARD (single message card) */
+    /* PAGE 2 CARD */
     .message-card {
       background: rgba(255, 235, 240, 0.85);
       backdrop-filter: blur(12px);
@@ -230,20 +232,21 @@
       padding-top: 1rem;
     }
 
-    /* FLOATING HEARTS */
+    /* FLOATING HEARTS (dynamic) */
     .floating-heart {
       position: fixed;
       pointer-events: none;
       z-index: 8;
       font-size: 1.2rem;
-      animation: floatHeart 8s linear infinite;
-      opacity: 0.6;
+      animation: floatHeart 8s linear forwards;
+      opacity: 0.7;
+      bottom: 0;
     }
     @keyframes floatHeart {
-      0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
-      20% { opacity: 0.8; }
-      80% { opacity: 0.6; }
-      100% { transform: translateY(-20vh) scale(1.1); opacity: 0; }
+      0% { transform: translateY(0) scale(0.6); opacity: 0; }
+      15% { opacity: 0.9; }
+      80% { opacity: 0.7; }
+      100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
     }
 
     @media (max-width: 650px) {
@@ -260,7 +263,7 @@
   <canvas id="bg-canvas"></canvas>
   <canvas id="confetti-canvas"></canvas>
 
-  <!-- ==================== PAGE 1 ==================== -->
+  <!-- ==================== PAGE 1 : WELCOME & CYCLING TYPEWRITER ==================== -->
   <div id="page1" class="page-view">
     <div class="hero-content">
       <div class="bouquet-emoji">💐</div>
@@ -274,29 +277,24 @@
         <div class="underline-animation"></div>
       </div>
 
-      <!-- SINGLE INBOX for random sequential messages (Page 1) -->
+      <!-- PAGE 1 INBOX: typewriter cycling messages -->
       <div class="messages-container">
-        <div id="page1MessageBox" class="heartfelt-message pacifico-message">
-          <!-- dynamic typewriter message appears here -->
-        </div>
+        <div id="page1MessageBox" class="heartfelt-message"></div>
       </div>
 
-      <!-- NEXT BUTTON with sparkle -->
       <button id="nextBtn" class="next-btn">✨ Next ✨</button>
     </div>
   </div>
 
-  <!-- ==================== PAGE 2 ==================== -->
+  <!-- ==================== PAGE 2 : FIXED MESSAGE WITH TYPEWRITER (like page1 style) ==================== -->
   <div id="page2" class="page-view hidden">
     <div class="message-content">
       <div class="message-card">
         <div class="big-emoji">💐✨🎂</div>
         <h1 class="message-title">🌟 To My Forever Best Friend 🌟</h1>
-        <!-- SINGLE INBOX (replaced 3 paragraphs with 1) -->
         <div class="messages-container">
-          <p id="page2Message" class="heartfelt-message pacifico-message">
-            You are the sunshine that brightens my darkest days. Every memory we've created is a treasure, and your friendship is the greatest gift. On your birthday, know that you are deeply loved, endlessly appreciated, and always celebrated. Here's to you, today and always! 💖✨
-          </p>
+          <!-- Page 2 single message box - will be filled with typewriter effect same as page1 -->
+          <p id="page2Message" class="heartfelt-message"></p>
         </div>
         <div class="signature">With all my heart — Your Best Friend 🤍</div>
         <button id="backHome" class="back-home">🎈 Back to Celebration 🎈</button>
@@ -309,8 +307,9 @@
   </audio>
 
   <script>
-    // ======================= SCRIPT.JS =======================
-    // 1. BACKGROUND PARTICLES (gentle sparkle with mouse interaction)
+    // --------------------------------------------------------------
+    // 1. BACKGROUND PARTICLES (sparkle + mouse attraction)
+    // --------------------------------------------------------------
     (function setupParticles() {
       const canvas = document.getElementById('bg-canvas');
       const ctx = canvas.getContext('2d');
@@ -327,7 +326,7 @@
       window.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
-        setTimeout(() => { mouseX = null; mouseY = null; }, 150);
+        setTimeout(() => { mouseX = null; mouseY = null; }, 180);
       });
 
       class Particle {
@@ -391,13 +390,15 @@
       }
       initParticles();
       animateParticles();
-      window.addEventListener('resize', () => { initParticles(); });
+      window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
     })();
 
-    // 2. CONFETTI ENGINE (simplified but lovely)
+    // --------------------------------------------------------------
+    // 2. CONFETTI ENGINE (glittering celebration)
+    // --------------------------------------------------------------
     (function confettiLib() {
       window.confetti = window.confetti || function(options) {
-        const defaults = { particleCount: 50, spread: 45, startVelocity: 15, origin: { x: 0.5, y: 0.5 }, colors: ['#FFB7C5', '#FF85A1', '#FF4D6D'], decay: 0.9, ticks: 200, gravity: 1 };
+        const defaults = { particleCount: 50, spread: 45, startVelocity: 15, origin: { x: 0.5, y: 0.5 }, colors: ['#FFB7C5', '#FF85A1', '#FF4D6D', '#FFD966'], decay: 0.9, ticks: 200, gravity: 1 };
         const settings = Object.assign({}, defaults, options);
         const canvas = document.getElementById('confetti-canvas');
         if (!canvas) return;
@@ -441,35 +442,57 @@
     function triggerConfetti() {
       for (let i = 0; i < 3; i++) {
         setTimeout(() => {
-          confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 }, colors: ['#FFB7C5', '#FF85A1', '#FF4D6D'] });
-          confetti({ particleCount: 60, spread: 100, origin: { y: 0.5, x: 0.2 } });
-          confetti({ particleCount: 60, spread: 100, origin: { y: 0.5, x: 0.8 } });
+          confetti({ particleCount: 120, spread: 85, origin: { y: 0.6 }, colors: ['#FFB7C5', '#FF85A1', '#FF4D6D', '#FFB347'] });
+          confetti({ particleCount: 70, spread: 100, origin: { y: 0.5, x: 0.2 } });
+          confetti({ particleCount: 70, spread: 100, origin: { y: 0.5, x: 0.8 } });
         }, i * 200);
       }
     }
 
-    // 3. PAGE 1: SINGLE INBOX RANDOM SEQUENTIAL MESSAGES (typewriter + infinite cycling random)
+    // --------------------------------------------------------------
+    // 3. FLOATING HEARTS (romantic atmosphere)
+    // --------------------------------------------------------------
+    function createFloatingHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('floating-heart');
+      const heartList = ['❤️', '💖', '💗', '💓', '💕', '🌸', '✨', '🎀'];
+      heart.innerHTML = heartList[Math.floor(Math.random() * heartList.length)];
+      heart.style.left = Math.random() * 100 + '%';
+      heart.style.fontSize = Math.random() * 18 + 14 + 'px';
+      heart.style.animationDuration = Math.random() * 5 + 5 + 's';
+      heart.style.animationDelay = '0s';
+      document.body.appendChild(heart);
+      setTimeout(() => { heart.remove(); }, 8000);
+    }
+    setInterval(() => { createFloatingHeart(); }, 1800);
+
+    // --------------------------------------------------------------
+    // 4. PAGE 1: INFINITE RANDOM CYCLE TYPEWRITER (exactly as required)
+    // --------------------------------------------------------------
     const messagePool = [
-      "You are truly one of the most amazing souls I've ever met. Every laugh, every late-night conversation, every moment of your support has made me a better person. 💕",
-      "I'm so grateful that life brought us together. You make ordinary days feel special, and you've shown me what true friendship means.",
-      "On your birthday, I just want you to know: you're cherished, you're important, and you'll always have me cheering for you. 🎂✨",
-      "You are my anchor and my wings — thank you for always believing in me. May your year sparkle brighter than the stars! 🌟",
-      "Friends like you are rare gems. Your kindness, loyalty and beautiful heart make the world a happier place. Love you! 💖",
-      "Every memory we've built is a treasure I'll hold forever. Here's to more adventures, crazy laughs, and endless support. Happy birthday bestie! 🥳"
+      "🌸 You are truly one of the most amazing souls I've ever met. Every laugh, every late-night conversation has made my world brighter. 💕",
+      "🌟 I'm so grateful that life brought us together. You make ordinary days feel special, and you've shown me what true friendship means.",
+      "🎂 On your birthday, I just want you to know: you're cherished, you're important, and you'll always have me cheering for you. ✨",
+      "💖 You are my anchor and my wings — thank you for always believing in me. May your year sparkle brighter than the stars! 🌟",
+      "🍭 Friends like you are rare gems. Your kindness, loyalty and beautiful heart make the world a happier place. Love you! 💖",
+      "📸 Every memory we've built is a treasure I'll hold forever. Here's to more adventures, crazy laughs, and endless support. Happy birthday bestie! 🥳",
+      "🌷 You make my life sweeter just by being in it. Today we celebrate the wonderful person you are! Sending infinite hugs 🤗"
     ];
 
-    let cycleActive = false;        // flag to keep cycling messages on page1
-    let currentTypingPromise = null;
-    let nextTimeout = null;
-    let lastMessageIndex = -1;
+    let page1Active = false;         
+    let page1Timeout = null;
+    let lastMsgIndex = -1;
+    let currentTyping = false;
 
-    // typewriter effect for a given element
-    async function typewriter(element, text, speed = 42) {
+    const page1MsgBox = document.getElementById('page1MessageBox');
+
+    // typewriter effect for any element (returns promise)
+    async function typewriterEffect(element, text, speed = 38) {
+      if (!element) return false;
       element.textContent = '';
       for (let i = 0; i < text.length; i++) {
-        // if cycle becomes inactive while typing, we break early (stop typing)
-        if (!cycleActive) {
-          element.textContent = text;  // optionally fill fully? but we break
+        if (!page1Active) {
+          element.textContent = text; // abort but fill partially
           return false;
         }
         element.textContent += text.charAt(i);
@@ -478,131 +501,58 @@
       return true;
     }
 
-    // display a specific message with typewriter effect in the single inbox
-    async function displayMessageAndContinue(messageText, messageBox) {
-      if (!cycleActive) return false;
-      const finished = await typewriter(messageBox, messageText, 42);
-      if (!cycleActive) return false;
-      // after typing finishes, wait 1.8 seconds then pick next random message
-      if (cycleActive) {
-        nextTimeout = setTimeout(() => {
-          if (cycleActive) {
-            pickAndShowNextMessage(messageBox);
-          }
-        }, 1800);
-      }
-      return finished;
-    }
-
-    // picks random message (different from last if possible) and shows it
-    function pickAndShowNextMessage(messageBox) {
-      if (!cycleActive) return;
+    async function showNextRandomMessageOnPage1() {
+      if (!page1Active) return;
       let newIndex = Math.floor(Math.random() * messagePool.length);
-      // avoid repeating same consecutive message if pool length > 1
-      if (messagePool.length > 1 && newIndex === lastMessageIndex) {
+      if (messagePool.length > 1 && newIndex === lastMsgIndex) {
         newIndex = (newIndex + 1) % messagePool.length;
       }
-      lastMessageIndex = newIndex;
-      const nextMsg = messagePool[newIndex];
-      displayMessageAndContinue(nextMsg, messageBox).catch(e => console.warn);
-    }
-
-    // starts the infinite random cycle on page 1, beginning with first message (or random friendly)
-    async function startMessageCycleOnPage1() {
-      // clear any pending cycle
-      stopMessageCycle();
-      cycleActive = true;
-      const messageBox = document.getElementById('page1MessageBox');
-      if (!messageBox) return;
-      // initial message - start with the first from pool "You are truly one of the most amazing..."
-      lastMessageIndex = 0;
-      const startMsg = messagePool[0];
-      await displayMessageAndContinue(startMsg, messageBox);
-      // after initial finishes, pickAndShowNextMessage will be called automatically inside displayMessageAndContinue's timeout
-    }
-
-    function stopMessageCycle() {
-      cycleActive = false;
-      if (nextTimeout) {
-        clearTimeout(nextTimeout);
-        nextTimeout = null;
-      }
-      // also cancel any ongoing typewriter? just set flag; typewriter loop checks cycleActive and stops writing
-    }
-
-    // 4. PAGE SWITCH LOGIC with proper cycle handling
-    const page1 = document.getElementById('page1');
-    const page2 = document.getElementById('page2');
-    const nextBtn = document.getElementById('nextBtn');
-    const backBtn = document.getElementById('backHome');
-    const popAudio = document.getElementById('pop-sound');
-
-    nextBtn.addEventListener('click', () => {
-      // stop the message cycling on page1
-      stopMessageCycle();
-      // play sound & confetti
-      popAudio.play().catch(e => console.log);
-      triggerConfetti();
-      nextBtn.style.transform = 'scale(0.95)';
-      setTimeout(() => nextBtn.style.transform = '', 200);
-      
-      setTimeout(() => {
-        page1.classList.add('hidden');
-        page2.classList.remove('hidden');
-        // extra confetti to celebrate page2 entry
-        confetti({ particleCount: 180, spread: 90, origin: { y: 0.5 } });
-      }, 400);
-    });
-
-    backBtn.addEventListener('click', () => {
-      // hide page2, show page1
-      page2.classList.add('hidden');
-      page1.classList.remove('hidden');
-      
-      // Reset page1 message box: clear any text and restart fresh cycle (random sequential)
-      const msgBox = document.getElementById('page1MessageBox');
-      if (msgBox) msgBox.textContent = '';
-      stopMessageCycle();   // clean old timers
-      // start fresh cycle with the first message again + random follow-ups
-      startMessageCycleOnPage1();
-      // trigger some confetti for happiness
-      confetti({ particleCount: 70, spread: 70, origin: { y: 0.6 } });
-    });
-
-    // 5. FLOATING HEARTS (gentle decoration)
-    function createFloatingHearts() {
-      const container = document.createElement('div');
-      container.style.position = 'fixed';
-      container.style.top = '0';
-      container.style.left = '0';
-      container.style.width = '100%';
-      container.style.height = '100%';
-      container.style.pointerEvents = 'none';
-      container.style.zIndex = '7';
-      document.body.appendChild(container);
-      
-      const emojis = ['🌹', '💖', '🌸', '💕', '✨', '🎈', '💗', '🎀', '💝'];
-      const count = 32;
-      for (let i = 0; i < count; i++) {
-        const heart = document.createElement('div');
-        heart.classList.add('floating-heart');
-        heart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
-        heart.style.left = Math.random() * 100 + '%';
-        heart.style.fontSize = (Math.random() * 24 + 14) + 'px';
-        heart.style.animationDuration = (Math.random() * 10 + 6) + 's';
-        heart.style.animationDelay = Math.random() * 12 + 's';
-        container.appendChild(heart);
+      lastMsgIndex = newIndex;
+      const selectedMsg = messagePool[newIndex];
+      await typewriterEffect(page1MsgBox, selectedMsg, 36);
+      if (page1Active) {
+        // schedule next message after delay
+        page1Timeout = setTimeout(() => {
+          if (page1Active) showNextRandomMessageOnPage1();
+        }, 2000);
       }
     }
-    createFloatingHearts();
 
-    // 6. INITIAL LOAD: start message cycle on page1, gentle confetti pop
-    window.addEventListener('load', () => {
-      startMessageCycleOnPage1();
-      setTimeout(() => {
-        confetti({ particleCount: 80, spread: 60, origin: { y: 0.65 }, colors: ['#FFB7C5', '#FF85A1'] });
-      }, 600);
-    });
-  </script>
-</body>
-</html>
+    async function startPage1Cycle() {
+      if (page1Active) stopPage1Cycle();
+      page1Active = true;
+      if (page1MsgBox) {
+        // start with a random first message
+        let startIdx = Math.floor(Math.random() * messagePool.length);
+        lastMsgIndex = startIdx;
+        await typewriterEffect(page1MsgBox, messagePool[startIdx], 38);
+        if (page1Active) {
+          page1Timeout = setTimeout(() => {
+            if (page1Active) showNextRandomMessageOnPage1();
+          }, 2000);
+        }
+      }
+    }
+
+    function stopPage1Cycle() {
+      page1Active = false;
+      if (page1Timeout) {
+        clearTimeout(page1Timeout);
+        page1Timeout = null;
+      }
+    }
+
+    // --------------------------------------------------------------
+    // 5. PAGE 2: TYPEWRITER ONCE (same charming style as page1)
+    // --------------------------------------------------------------
+    const page2FinalMessage = "✨ You are the sunshine that brightens my darkest days. Every memory we've created is a treasure, and your friendship is the greatest gift. On your birthday, know that you are deeply loved, endlessly appreciated, and always celebrated. Here's to you, today and always! 💖✨";
+
+    let page2TypingInProgress = false;
+    const page2MsgElement = document.getElementById('page2Message');
+
+    async function animatePage2Message() {
+      if (!page2MsgElement) return;
+      // cancel any ongoing typing on page2
+      if (page2TypingInProgress) return;
+      page2TypingInProgress = true;
+  
