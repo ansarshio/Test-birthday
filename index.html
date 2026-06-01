@@ -6,13 +6,12 @@
   <title>✨ Bestie's Birthday Magic ✨</title>
   <style>
     /* ----------------------------------------------
-      COMPLETE STYLE - Birthday Wonderland
+      COMPLETE STYLE - WORKING & SMOOTH
     ------------------------------------------------ */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      user-select: none; /* subtle but elegant */
     }
 
     body {
@@ -146,7 +145,7 @@
       text-align: center;
       line-height: 1.4;
       transition: all 0.3s ease;
-      min-height: 100px;
+      min-height: 120px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -243,14 +242,14 @@
       bottom: 0;
     }
     @keyframes floatHeart {
-      0% { transform: translateY(0) scale(0.6); opacity: 0; }
+      0% { transform: translateY(0) scale(0.5); opacity: 0; }
       15% { opacity: 0.9; }
       80% { opacity: 0.7; }
       100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
     }
 
     @media (max-width: 650px) {
-      .heartfelt-message { font-size: 1rem; padding: 0.7rem 1rem; }
+      .heartfelt-message { font-size: 1rem; padding: 0.7rem 1rem; min-height: 100px; }
       .next-btn { font-size: 1.1rem; padding: 0.6rem 1.5rem; }
       .back-home { font-size: 0.9rem; padding: 0.6rem 1.2rem; }
       .message-card { padding: 1.5rem; }
@@ -293,7 +292,6 @@
         <div class="big-emoji">💐✨🎂</div>
         <h1 class="message-title">🌟 To My Forever Best Friend 🌟</h1>
         <div class="messages-container">
-          <!-- Page 2 single message box - will be filled with typewriter effect same as page1 -->
           <p id="page2Message" class="heartfelt-message"></p>
         </div>
         <div class="signature">With all my heart — Your Best Friend 🤍</div>
@@ -308,7 +306,7 @@
 
   <script>
     // --------------------------------------------------------------
-    // 1. BACKGROUND PARTICLES (sparkle + mouse attraction)
+    // 1. BACKGROUND PARTICLES (sparkle + gentle mouse interaction)
     // --------------------------------------------------------------
     (function setupParticles() {
       const canvas = document.getElementById('bg-canvas');
@@ -326,7 +324,7 @@
       window.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
-        setTimeout(() => { mouseX = null; mouseY = null; }, 180);
+        setTimeout(() => { mouseX = null; mouseY = null; }, 160);
       });
 
       class Particle {
@@ -343,16 +341,16 @@
             const dist = Math.sqrt(dx*dx + dy*dy);
             if (dist < 100) {
               const angle = Math.atan2(dy, dx);
-              const force = (100 - dist) / 100 * 1.5;
-              this.speedX += Math.cos(angle) * force * 0.2;
-              this.speedY += Math.sin(angle) * force * 0.2;
+              const force = (100 - dist) / 100 * 1.2;
+              this.speedX += Math.cos(angle) * force * 0.15;
+              this.speedY += Math.sin(angle) * force * 0.15;
             }
           }
           if (this.x + this.size < 0) this.x = canvas.width + this.size;
           if (this.x - this.size > canvas.width) this.x = -this.size;
           if (this.y + this.size < 0) this.y = canvas.height + this.size;
           if (this.y - this.size > canvas.height) this.y = -this.size;
-          let maxSpeed = 1.5;
+          let maxSpeed = 1.3;
           this.speedX = Math.min(maxSpeed, Math.max(-maxSpeed, this.speedX));
           this.speedY = Math.min(maxSpeed, Math.max(-maxSpeed, this.speedY));
         }
@@ -361,7 +359,7 @@
           ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
           ctx.fillStyle = this.color;
           ctx.globalAlpha = this.opacity;
-          ctx.shadowBlur = 8;
+          ctx.shadowBlur = 6;
           ctx.shadowColor = this.color;
           ctx.fill();
           ctx.shadowBlur = 0;
@@ -371,14 +369,14 @@
 
       function initParticles() {
         particles = [];
-        let count = Math.min(100, Math.max(60, (canvas.width * canvas.height) / 12000));
+        let count = Math.min(90, Math.max(55, (canvas.width * canvas.height) / 13000));
         for (let i = 0; i < count; i++) {
           let size = Math.random() * 5 + 2;
           let x = Math.random() * canvas.width;
           let y = Math.random() * canvas.height;
-          let speedX = (Math.random() - 0.5) * 1;
-          let speedY = (Math.random() - 0.5) * 1;
-          const colors = ['#FFB7C5', '#FF9EB5', '#FFC0D0', '#FFA5C0', '#FF85A1'];
+          let speedX = (Math.random() - 0.5) * 0.8;
+          let speedY = (Math.random() - 0.5) * 0.8;
+          const colors = ['#FFB7C5', '#FF9EB5', '#FFC0D0', '#FFA5C0', '#FF85A1', '#FFD9E5'];
           let color = colors[Math.floor(Math.random() * colors.length)];
           particles.push(new Particle(x, y, size, speedX, speedY, color));
         }
@@ -394,11 +392,11 @@
     })();
 
     // --------------------------------------------------------------
-    // 2. CONFETTI ENGINE (glittering celebration)
+    // 2. CONFETTI ENGINE (working properly)
     // --------------------------------------------------------------
     (function confettiLib() {
       window.confetti = window.confetti || function(options) {
-        const defaults = { particleCount: 50, spread: 45, startVelocity: 15, origin: { x: 0.5, y: 0.5 }, colors: ['#FFB7C5', '#FF85A1', '#FF4D6D', '#FFD966'], decay: 0.9, ticks: 200, gravity: 1 };
+        const defaults = { particleCount: 60, spread: 50, startVelocity: 14, origin: { x: 0.5, y: 0.5 }, colors: ['#FFB7C5', '#FF85A1', '#FF4D6D', '#FFD966', '#FFA07A'], decay: 0.9, ticks: 200, gravity: 0.8 };
         const settings = Object.assign({}, defaults, options);
         const canvas = document.getElementById('confetti-canvas');
         if (!canvas) return;
@@ -410,8 +408,8 @@
           particles.push({
             x: settings.origin.x * width, y: settings.origin.y * height,
             size: Math.random() * 6 + 3,
-            speedX: (Math.random() - 0.5) * settings.spread * 0.5,
-            speedY: -Math.random() * settings.startVelocity - 3,
+            speedX: (Math.random() - 0.5) * settings.spread * 0.6,
+            speedY: -Math.random() * settings.startVelocity - 2,
             color: settings.colors[Math.floor(Math.random() * settings.colors.length)],
             rotation: Math.random() * 360, rotationSpeed: (Math.random() - 0.5) * 8,
             ticks: settings.ticks, gravity: settings.gravity,
@@ -428,7 +426,7 @@
             ctx.restore();
             p.x += p.speedX;
             p.y += p.speedY;
-            p.speedY += p.gravity * 0.3;
+            p.speedY += p.gravity * 0.25;
             p.rotation += p.rotationSpeed;
             p.ticks--;
           }
@@ -442,20 +440,20 @@
     function triggerConfetti() {
       for (let i = 0; i < 3; i++) {
         setTimeout(() => {
-          confetti({ particleCount: 120, spread: 85, origin: { y: 0.6 }, colors: ['#FFB7C5', '#FF85A1', '#FF4D6D', '#FFB347'] });
+          confetti({ particleCount: 110, spread: 85, origin: { y: 0.6 }, colors: ['#FFB7C5', '#FF85A1', '#FF4D6D', '#FFB347'] });
           confetti({ particleCount: 70, spread: 100, origin: { y: 0.5, x: 0.2 } });
           confetti({ particleCount: 70, spread: 100, origin: { y: 0.5, x: 0.8 } });
-        }, i * 200);
+        }, i * 180);
       }
     }
 
     // --------------------------------------------------------------
-    // 3. FLOATING HEARTS (romantic atmosphere)
+    // 3. FLOATING HEARTS
     // --------------------------------------------------------------
     function createFloatingHeart() {
       const heart = document.createElement('div');
       heart.classList.add('floating-heart');
-      const heartList = ['❤️', '💖', '💗', '💓', '💕', '🌸', '✨', '🎀'];
+      const heartList = ['❤️', '💖', '💗', '💓', '💕', '🌸', '✨', '🎀', '💝'];
       heart.innerHTML = heartList[Math.floor(Math.random() * heartList.length)];
       heart.style.left = Math.random() * 100 + '%';
       heart.style.fontSize = Math.random() * 18 + 14 + 'px';
@@ -464,10 +462,10 @@
       document.body.appendChild(heart);
       setTimeout(() => { heart.remove(); }, 8000);
     }
-    setInterval(() => { createFloatingHeart(); }, 1800);
+    setInterval(() => { createFloatingHeart(); }, 1700);
 
     // --------------------------------------------------------------
-    // 4. PAGE 1: INFINITE RANDOM CYCLE TYPEWRITER (exactly as required)
+    // 4. PAGE 1: INFINITE RANDOM CYCLE TYPEWRITER (smooth)
     // --------------------------------------------------------------
     const messagePool = [
       "🌸 You are truly one of the most amazing souls I've ever met. Every laugh, every late-night conversation has made my world brighter. 💕",
@@ -476,23 +474,24 @@
       "💖 You are my anchor and my wings — thank you for always believing in me. May your year sparkle brighter than the stars! 🌟",
       "🍭 Friends like you are rare gems. Your kindness, loyalty and beautiful heart make the world a happier place. Love you! 💖",
       "📸 Every memory we've built is a treasure I'll hold forever. Here's to more adventures, crazy laughs, and endless support. Happy birthday bestie! 🥳",
-      "🌷 You make my life sweeter just by being in it. Today we celebrate the wonderful person you are! Sending infinite hugs 🤗"
+      "🌷 You make my life sweeter just by being in it. Today we celebrate the wonderful person you are! Sending infinite hugs 🤗",
+      "💫 You are magic, you are love, and you deserve all the joy in the universe. Happy birthday, my forever person! ✨💕"
     ];
 
     let page1Active = false;         
     let page1Timeout = null;
     let lastMsgIndex = -1;
-    let currentTyping = false;
 
     const page1MsgBox = document.getElementById('page1MessageBox');
 
-    // typewriter effect for any element (returns promise)
-    async function typewriterEffect(element, text, speed = 38) {
+    // typewriter effect for any element
+    async function typewriterEffect(element, text, speed = 35) {
       if (!element) return false;
       element.textContent = '';
       for (let i = 0; i < text.length; i++) {
         if (!page1Active) {
-          element.textContent = text; // abort but fill partially
+          // if cycle stopped, we can abort filling, but still show partial? we set full for safety
+          element.textContent = text;
           return false;
         }
         element.textContent += text.charAt(i);
@@ -509,12 +508,11 @@
       }
       lastMsgIndex = newIndex;
       const selectedMsg = messagePool[newIndex];
-      await typewriterEffect(page1MsgBox, selectedMsg, 36);
+      await typewriterEffect(page1MsgBox, selectedMsg, 33);
       if (page1Active) {
-        // schedule next message after delay
         page1Timeout = setTimeout(() => {
           if (page1Active) showNextRandomMessageOnPage1();
-        }, 2000);
+        }, 1900);
       }
     }
 
@@ -522,14 +520,13 @@
       if (page1Active) stopPage1Cycle();
       page1Active = true;
       if (page1MsgBox) {
-        // start with a random first message
         let startIdx = Math.floor(Math.random() * messagePool.length);
         lastMsgIndex = startIdx;
-        await typewriterEffect(page1MsgBox, messagePool[startIdx], 38);
+        await typewriterEffect(page1MsgBox, messagePool[startIdx], 33);
         if (page1Active) {
           page1Timeout = setTimeout(() => {
             if (page1Active) showNextRandomMessageOnPage1();
-          }, 2000);
+          }, 1900);
         }
       }
     }
@@ -543,16 +540,17 @@
     }
 
     // --------------------------------------------------------------
-    // 5. PAGE 2: TYPEWRITER ONCE (same charming style as page1)
+    // 5. PAGE 2: TYPEWRITER ONCE (perfect same style as page1)
     // --------------------------------------------------------------
     const page2FinalMessage = "✨ You are the sunshine that brightens my darkest days. Every memory we've created is a treasure, and your friendship is the greatest gift. On your birthday, know that you are deeply loved, endlessly appreciated, and always celebrated. Here's to you, today and always! 💖✨";
-
-    let page2TypingInProgress = false;
+    
+    let page2TypingActive = false;
     const page2MsgElement = document.getElementById('page2Message');
 
     async function animatePage2Message() {
       if (!page2MsgElement) return;
-      // cancel any ongoing typing on page2
-      if (page2TypingInProgress) return;
-      page2TypingInProgress = true;
-  
+      // stop any ongoing page2 animation to avoid conflict
+      if (page2TypingActive) return;
+      page2TypingActive = true;
+      page2MsgElement.textContent = '';
+      for (let i = 0; i < p
