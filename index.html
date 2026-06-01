@@ -555,7 +555,54 @@
     });
 
     backBtn.addEventListener('click', () => {
-      // hide page
+      // hide page2, show page1
+      page2.classList.add('hidden');
+      page1.classList.remove('hidden');
+      
+      // Reset page1 message box: clear any text and restart fresh cycle (random sequential)
+      const msgBox = document.getElementById('page1MessageBox');
+      if (msgBox) msgBox.textContent = '';
+      stopMessageCycle();   // clean old timers
+      // start fresh cycle with the first message again + random follow-ups
+      startMessageCycleOnPage1();
+      // trigger some confetti for happiness
+      confetti({ particleCount: 70, spread: 70, origin: { y: 0.6 } });
+    });
 
+    // 5. FLOATING HEARTS (gentle decoration)
+    function createFloatingHearts() {
+      const container = document.createElement('div');
+      container.style.position = 'fixed';
+      container.style.top = '0';
+      container.style.left = '0';
+      container.style.width = '100%';
+      container.style.height = '100%';
+      container.style.pointerEvents = 'none';
+      container.style.zIndex = '7';
+      document.body.appendChild(container);
+      
+      const emojis = ['🌹', '💖', '🌸', '💕', '✨', '🎈', '💗', '🎀', '💝'];
+      const count = 32;
+      for (let i = 0; i < count; i++) {
+        const heart = document.createElement('div');
+        heart.classList.add('floating-heart');
+        heart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.fontSize = (Math.random() * 24 + 14) + 'px';
+        heart.style.animationDuration = (Math.random() * 10 + 6) + 's';
+        heart.style.animationDelay = Math.random() * 12 + 's';
+        container.appendChild(heart);
+      }
+    }
+    createFloatingHearts();
 
-Is code mein dekho page 1 mein kesa text typewriter hi rha hai wesa hee mujhe page 2 keh under write ho wesa chahiye toh pura code ek baar likh ker doge sahi seh
+    // 6. INITIAL LOAD: start message cycle on page1, gentle confetti pop
+    window.addEventListener('load', () => {
+      startMessageCycleOnPage1();
+      setTimeout(() => {
+        confetti({ particleCount: 80, spread: 60, origin: { y: 0.65 }, colors: ['#FFB7C5', '#FF85A1'] });
+      }, 600);
+    });
+  </script>
+</body>
+</html>
