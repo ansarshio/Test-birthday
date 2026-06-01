@@ -1,250 +1,220 @@
-// ----------------------------- 1. BACKGROUND PARTICLES -----------------------------
-const canvas = document.getElementById('bg-canvas');
-const ctx = canvas.getContext('2d');
-let particles = [];
-let mouseX = null, mouseY = null;
-
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-window.addEventListener('mousemove', (e) => {
-  mouseX = e.clientX;
-  mouseY = e.clientY;
-  setTimeout(() => { mouseX = null; mouseY = null; }, 150);
-});
-
-class Particle {
-  constructor(x, y, size, speedX, speedY, color) {
-    this.x = x; this.y = y; this.size = size;
-    this.speedX = speedX; this.speedY = speedY;
-    this.color = color; this.opacity = Math.random() * 0.5 + 0.3;
-  }
-  update() {
-    this.x += this.speedX; this.y += this.speedY;
-    if (mouseX && mouseY) {
-      const dx = this.x - mouseX, dy = this.y - mouseY;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-      if (dist < 100) {
-        const angle = Math.atan2(dy, dx);
-        const force = (100 - dist) / 100 * 1.5;
-        this.speedX += Math.cos(angle) * force * 0.2;
-        this.speedY += Math.sin(angle) * force * 0.2;
-      }
-    }
-    if (this.x + this.size < 0) this.x = canvas.width + this.size;
-    if (this.x - this.size > canvas.width) this.x = -this.size;
-    if (this.y + this.size < 0) this.y = canvas.height + this.size;
-    if (this.y - this.size > canvas.height) this.y = -this.size;
-    let maxSpeed = 1.5;
-    this.speedX = Math.min(maxSpeed, Math.max(-maxSpeed, this.speedX));
-    this.speedY = Math.min(maxSpeed, Math.max(-maxSpeed, this.speedY));
-  }
-  draw() {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fillStyle = this.color;
-    ctx.globalAlpha = this.opacity;
-    ctx.shadowBlur = 8;
-    ctx.shadowColor = this.color;
-    ctx.fill();
-    ctx.shadowBlur = 0;
-    ctx.globalAlpha = 1;
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-function initParticles() {
-  particles = [];
-  let count = Math.min(100, Math.max(60, (canvas.width * canvas.height) / 12000));
-  for (let i = 0; i < count; i++) {
-    let size = Math.random() * 5 + 2;
-    let x = Math.random() * canvas.width;
-    let y = Math.random() * canvas.height;
-    let speedX = (Math.random() - 0.5) * 1;
-    let speedY = (Math.random() - 0.5) * 1;
-    const colors = ['#FFB7C5', '#FF9EB5', '#FFC0D0', '#FFA5C0', '#FF85A1'];
-    let color = colors[Math.floor(Math.random() * colors.length)];
-    particles.push(new Particle(x, y, size, speedX, speedY, color));
-  }
-}
-function animateParticles() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  for (let p of particles) { p.update(); p.draw(); }
-  requestAnimationFrame(animateParticles);
-}
-initParticles();
-animateParticles();
-
-// ----------------------------- 2. CONFETTI -----------------------------
-(function() {
-  window.confetti = window.confetti || function(options) {
-    const defaults = { particleCount: 50, spread: 45, startVelocity: 15, origin: { x: 0.5, y: 0.5 }, colors: ['#FFB7C5', '#FF85A1', '#FF4D6D'], decay: 0.9, ticks: 200, gravity: 1 };
-    const settings = Object.assign({}, defaults, options);
-    const canvas = document.getElementById('confetti-canvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    let width = window.innerWidth, height = window.innerHeight;
-    canvas.width = width; canvas.height = height;
-    let particles = [];
-    for (let i = 0; i < settings.particleCount; i++) {
-      particles.push({
-        x: settings.origin.x * width, y: settings.origin.y * height,
-        size: Math.random() * 6 + 3,
-        speedX: (Math.random() - 0.5) * settings.spread * 0.5,
-        speedY: -Math.random() * settings.startVelocity - 3,
-        color: settings.colors[Math.floor(Math.random() * settings.colors.length)],
-        rotation: Math.random() * 360, rotationSpeed: (Math.random() - 0.5) * 8,
-        ticks: settings.ticks, gravity: settings.gravity,
-      });
-    }
-    function draw() {
-      ctx.clearRect(0, 0, width, height);
-      for (let p of particles) {
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rotation * Math.PI / 180);
-        ctx.fillStyle = p.color;
-        ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
-        ctx.restore();
-        p.x += p.speedX;
-        p.y += p.speedY;
-        p.speedY += p.gravity * 0.3;
-        p.rotation += p.rotationSpeed;
-        p.ticks--;
-      }
-      particles = particles.filter(p => p.ticks > 0 && p.y < height + 100);
-      if (particles.length) requestAnimationFrame(draw);
-    }
-    requestAnimationFrame(draw);
-  };
-})();
-
-function triggerConfetti() {
-  for (let i = 0; i < 3; i++) {
-    setTimeout(() => {
-      confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 }, colors: ['#FFB7C5', '#FF85A1', '#FF4D6D'] });
-      confetti({ particleCount: 60, spread: 100, origin: { y: 0.5, x: 0.2 } });
-      confetti({ particleCount: 60, spread: 100, origin: { y: 0.5, x: 0.8 } });
-    }, i * 200);
-  }
+body {
+  font-family: 'Quicksand', sans-serif;
+  background: linear-gradient(145deg, #ff9a9e 0%, #fad0c4 50%, #fbc2eb 100%);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
 }
 
-// ----------------------------- 3. TYPEWRITER EFFECTS -----------------------------
-async function typewriter(element, text, speed = 60) {
-  element.textContent = '';
-  for (let i = 0; i < text.length; i++) {
-    element.textContent += text.charAt(i);
-    await new Promise(resolve => setTimeout(resolve, speed));
-  }
+/* CANVAS */
+#bg-canvas, #confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+#bg-canvas {
+  background: radial-gradient(circle at 30% 10%, #ffe6f0, #ffccdd);
+}
+#confetti-canvas {
+  z-index: 100;
 }
 
-// Page 1 message
-const page1Message = "🌸 Having you as my best friend makes every day special. So grateful for you! 🌸";
-const p1Container = document.getElementById('typewriter-message-p1');
-
-// Page 2 paragraphs (original texts)
-const originalParagraphs = [
-  "You are truly one of the most amazing souls I've ever met. Every laugh, every late-night conversation, every moment of your support has made me a better person. 💕",
-  "I'm so grateful that life brought us together. You make ordinary days feel special, and you've shown me what true friendship means.",
-  "On your birthday, I just want you to know: you're cherished, you're important, and you'll always have me cheering for you. 🎂✨"
-];
-
-// Function to shuffle array (random order)
-function shuffleArray(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
+/* PAGES */
+.page-view {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+.page-view.hidden {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+.hero-content, .message-content {
+  max-width: 900px;
+  width: 100%;
+  animation: fadeInUp 0.8s ease-out;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-// Start page 1 typewriter on load
-window.addEventListener('load', () => {
-  typewriter(p1Container, page1Message, 55);
-  setTimeout(() => {
-    confetti({ particleCount: 80, spread: 60, origin: { y: 0.65 }, colors: ['#FFB7C5', '#FF85A1'] });
-  }, 500);
-});
-
-// ----------------------------- 4. PAGE SWITCH & PAGE 2 TYPEWRITER (RANDOM ORDER) -----------------------------
-const page1 = document.getElementById('page1');
-const page2 = document.getElementById('page2');
-const nextBtn = document.getElementById('nextBtn');
-const backBtn = document.getElementById('backHome');
-const popAudio = document.getElementById('pop-sound');
-
-let page2TypingStarted = false;
-
-async function startPage2Typewriter() {
-  if (page2TypingStarted) return;
-  page2TypingStarted = true;
-  
-  // Create a shuffled copy of the paragraphs
-  const shuffled = shuffleArray([...originalParagraphs]);
-  
-  const line1 = document.getElementById('p2-line1');
-  const line2 = document.getElementById('p2-line2');
-  const line3 = document.getElementById('p2-line3');
-  
-  // Write them in the new random order
-  await typewriter(line1, shuffled[0], 40);
-  await typewriter(line2, shuffled[1], 40);
-  await typewriter(line3, shuffled[2], 40);
+/* BOUQUET */
+.bouquet-emoji {
+  font-size: 5rem;
+  animation: bouquetFloat 2s infinite ease-in-out;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+@keyframes bouquetFloat {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(4deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
 }
 
-nextBtn.addEventListener('click', () => {
-  popAudio.play().catch(e=>console.log);
-  triggerConfetti();
-  nextBtn.style.transform = 'scale(0.95)';
-  setTimeout(() => nextBtn.style.transform = '', 200);
-  setTimeout(() => {
-    page1.classList.add('hidden');
-    page2.classList.remove('hidden');
-    startPage2Typewriter();
-    confetti({ particleCount: 150, spread: 90, origin: { y: 0.5 } });
-  }, 400);
-});
-
-backBtn.addEventListener('click', () => {
-  page2.classList.add('hidden');
-  page1.classList.remove('hidden');
-  // Reset for next time (so random order can happen again)
-  page2TypingStarted = false;
-  const line1 = document.getElementById('p2-line1');
-  const line2 = document.getElementById('p2-line2');
-  const line3 = document.getElementById('p2-line3');
-  line1.textContent = '';
-  line2.textContent = '';
-  line3.textContent = '';
-  confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
-});
-
-// ----------------------------- 5. FLOATING HEARTS (REDUCED) -----------------------------
-function createFloatingHearts() {
-  const container = document.createElement('div');
-  container.style.position = 'fixed';
-  container.style.top = '0';
-  container.style.left = '0';
-  container.style.width = '100%';
-  container.style.height = '100%';
-  container.style.pointerEvents = 'none';
-  container.style.zIndex = '7';
-  document.body.appendChild(container);
-  
-  const emojis = ['🌹', '💖', '🌸', '💕', '✨', '🎈', '💗'];
-  const count = 28;
-  for (let i = 0; i < count; i++) {
-    const heart = document.createElement('div');
-    heart.classList.add('floating-heart');
-    heart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
-    heart.style.left = Math.random() * 100 + '%';
-    heart.style.fontSize = (Math.random() * 24 + 14) + 'px';
-    heart.style.animationDuration = (Math.random() * 10 + 6) + 's';
-    heart.style.animationDelay = Math.random() * 12 + 's';
-    container.appendChild(heart);
-  }
+/* TITLE */
+.birthday-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(3rem, 12vw, 5.5rem);
+  color: #ff4d6d;
+  text-shadow: 0 0 12px #ffb3c6, 0 5px 20px rgba(255, 80, 120, 0.5);
+  margin-bottom: 1rem;
 }
-createFloatingHearts();
+.birthday-title .line {
+  display: inline-block;
+  animation: titleFloat 3s infinite alternate;
+}
+@keyframes titleFloat {
+  0% { transform: translateY(0px); text-shadow: 0 0 5px #ffb3c6; }
+  100% { transform: translateY(-6px); text-shadow: 0 0 20px #ff85a1; }
+}
+
+.name-container {
+  margin: 1rem 0;
+}
+.glow-name {
+  font-size: clamp(1.3rem, 5vw, 2rem);
+  font-weight: 700;
+  background: linear-gradient(135deg, #ffb7c5, #ff85a1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.underline-animation {
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, #ff99b4, #ff4d6d);
+  border-radius: 5px;
+  margin: 8px auto 0;
+  animation: stretchLine 0.9s ease-out 0.6s forwards;
+}
+@keyframes stretchLine {
+  from { width: 0%; opacity: 0; }
+  to { width: 70%; opacity: 1; }
+}
+
+/* INBOX STYLES (shared) */
+.pacifico-message {
+  font-family: 'Pacifico', cursive;
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: #5e2a3e;
+  background: rgba(255, 240, 245, 0.8);
+  backdrop-filter: blur(6px);
+  border-radius: 50px;
+  padding: 1rem 1.8rem;
+  margin: 1.8rem auto;
+  max-width: 700px;
+  border: 1px solid #ffb7c5;
+  box-shadow: 0 5px 15px rgba(255, 80, 120, 0.2);
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* Inbox on page 2 paragraphs */
+.heartfelt-text {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  margin: 1rem 0;
+}
+
+/* BUTTONS */
+.next-btn, .back-home {
+  margin-top: 1.8rem;
+  padding: 0.8rem 2rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border: none;
+  background: #ff4d6d;  /* solid pink */
+  color: white;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 18px rgba(255, 60, 100, 0.4);
+  font-family: 'Quicksand', sans-serif;
+}
+.next-btn:hover, .back-home:hover {
+  transform: scale(1.05);
+  background: #e6395c;
+}
+
+/* PAGE 2 CARD */
+.message-card {
+  background: rgba(255, 235, 240, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 70px;
+  padding: 2.5rem;
+  border: 2px solid #ff99b4;
+  box-shadow: 0 20px 35px rgba(255, 80, 120, 0.3);
+}
+.big-emoji {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  animation: wiggle 1.5s infinite;
+}
+@keyframes wiggle {
+  0%,100% { transform: rotate(0deg); }
+  25% { transform: rotate(8deg); }
+  75% { transform: rotate(-8deg); }
+}
+.message-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(1.8rem, 6vw, 2.5rem);
+  background: linear-gradient(135deg, #ff4d6d, #ff85a1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 1rem;
+}
+.signature {
+  margin-top: 1.5rem;
+  font-style: italic;
+  font-weight: 600;
+  color: #b13e5c;
+  border-top: 1px dashed #ff99b4;
+  padding-top: 1rem;
+}
+
+/* FLOATING HEARTS (fewer) */
+.floating-heart {
+  position: fixed;
+  pointer-events: none;
+  z-index: 8;
+  font-size: 1.2rem;
+  animation: floatHeart 8s linear infinite;
+  opacity: 0.6;
+}
+@keyframes floatHeart {
+  0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+  20% { opacity: 0.8; }
+  80% { opacity: 0.6; }
+  100% { transform: translateY(-20vh) scale(1.1); opacity: 0; }
+}
+
+@media (max-width: 650px) {
+  .pacifico-message { font-size: 1rem; padding: 0.8rem 1rem; }
+  .heartfelt-text { font-size: 0.95rem; }
+  .next-btn, .back-home { font-size: 0.9rem; padding: 0.6rem 1.2rem; }
+  .message-card { padding: 1.5rem; }
+}
