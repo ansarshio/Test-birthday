@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Happy Birthday Bestie 💐</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Fredoka+One&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <canvas id="bg-canvas"></canvas>
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- PAGE 1 -->
+  <div id="page1" class="page-view">
+    <div class="hero-content">
+      <div class="bouquet-emoji">💐</div>
+      <h1 class="birthday-title">
+        <span class="line">Happy</span>
+        <span class="line">Birthday</span>
+        <span class="line">Bestie! 🎉</span>
+      </h1>
+      <div class="name-container">
+        <div class="glow-name">You are the best thing that happened to my life.</div>
+        <div class="underline-animation"></div>
+      </div>
+
+      <!-- This div will get typewriter text (Pacifico) -->
+      <div id="typewriter-message-p1" class="hero-message pacifico-message"></div>
+
+      <!-- NEXT BUTTON (instead of special msg) -->
+      <button id="nextBtn" class="next-btn">➡️ Next ⬅️</button>
+    </div>
+  </div>
+
+  <!-- PAGE 2 -->
+  <div id="page2" class="page-view hidden">
+    <div class="message-content">
+      <div class="message-card">
+        <div class="big-emoji">💐✨</div>
+        <h1 class="message-title">🌟 To My Dearest Best Friend 🌟</h1>
+        <!-- Typewriter will write into these paragraphs sequentially -->
+        <div id="typewriter-container-p2">
+          <p id="p2-line1" class="heartfelt-text pacifico-message"></p>
+          <p id="p2-line2" class="heartfelt-text pacifico-message"></p>
+          <p id="p2-line3" class="heartfelt-text pacifico-message"></p>
+        </div>
+        <div class="signature">With all my heart — Your Best Friend 🤍</div>
+        <button id="backHome" class="back-home">🎈 Back to Celebration 🎈</button>
+      </div>
+    </div>
+  </div>
+
+  <audio id="pop-sound" preload="auto">
+    <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg">
+  </audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
