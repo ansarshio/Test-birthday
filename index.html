@@ -3,58 +3,403 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Happy Birthday Bestie 💐</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Fredoka+One&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Birthday Inbox ✨ | Typewriter Magic</title>
+  <style>
+    /* ========== CSS RESET & GLOBAL ========== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #fce9f2 0%, #ffe6f0 100%);
+      font-family: 'Poppins', 'Segoe UI', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+      padding: 2rem 1.5rem;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* main container – two beautiful pages */
+    .birthday-journey {
+      max-width: 1300px;
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      align-items: stretch;
+    }
+
+    /* shared page card style */
+    .page {
+      flex: 1;
+      min-width: 300px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(2px);
+      border-radius: 3rem;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.05);
+      padding: 2rem 1.8rem;
+      transition: transform 0.2s ease, box-shadow 0.2s;
+      border: 1px solid rgba(255, 215, 225, 0.6);
+    }
+
+    .page:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 30px 50px -15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* page headers */
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 3px dashed #ffb7c5;
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .page-header h2 {
+      font-size: 1.9rem;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      background: linear-gradient(135deg, #d14b6e, #f098b3);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .page-header span {
+      font-size: 2rem;
+    }
+
+    /* INBOX CARD (page 1) */
+    .inbox-card {
+      background: #fffef7;
+      border-radius: 2rem;
+      padding: 1.5rem;
+      box-shadow: inset 0 1px 4px #ffe3e9, 0 12px 18px -8px rgba(0, 0, 0, 0.1);
+      border: 1px solid #ffe2ea;
+      transition: all 0.2s;
+    }
+
+    .inbox-icon {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      display: inline-flex;
+      background: #ffecf0;
+      padding: 0.5rem 1rem;
+      border-radius: 60px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .inbox-icon span:first-child {
+      font-size: 1.8rem;
+    }
+
+    /* typewriter area */
+    .typewriter-area {
+      margin-top: 1.5rem;
+      font-size: 1.2rem;
+      line-height: 1.55;
+      color: #2d1f26;
+      background: #fffafc;
+      padding: 1rem 1.2rem;
+      border-radius: 1.6rem;
+      min-height: 180px;
+      word-break: break-word;
+      border-left: 6px solid #f7a1b9;
+    }
+
+    .typed-line {
+      font-weight: 500;
+      margin-bottom: 0.9rem;
+      white-space: pre-wrap;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      letter-spacing: 0.2px;
+    }
+
+    /* cursor animation for active typing */
+    .typing-cursor {
+      border-right: 3px solid #e86f92;
+      animation: blinkCursor 0.75s step-end infinite;
+      padding-right: 2px;
+    }
+
+    @keyframes blinkCursor {
+      0%, 100% { border-color: #e86f92; }
+      50% { border-color: transparent; }
+    }
+
+    /* page 2 wishes container */
+    .wishes-container {
+      background: #fff3f7;
+      border-radius: 1.8rem;
+      padding: 1.2rem 1.5rem;
+      transition: 0.2s;
+    }
+
+    .wishes-container p {
+      background: white;
+      padding: 1rem 1.2rem;
+      border-radius: 1.6rem;
+      margin: 1rem 0;
+      font-size: 1.12rem;
+      font-weight: 500;
+      color: #9b4b64;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.03);
+      border: 1px solid #ffd9e2;
+      transition: all 0.2s;
+    }
+
+    /* remove three p effect - only first stays but we manage via JS */
+    .wishes-container p:first-child {
+      background: linear-gradient(115deg, #fff2f5, #fff6f9);
+      border-left: 9px solid #ff8aa8;
+      color: #b13e60;
+      font-weight: 600;
+    }
+
+    /* subtle decoration */
+    .floating-heart {
+      text-align: right;
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 780px) {
+      body {
+        padding: 1.2rem;
+      }
+      .page {
+        padding: 1.5rem;
+      }
+      .typewriter-area {
+        font-size: 1rem;
+      }
+      .page-header h2 {
+        font-size: 1.6rem;
+      }
+    }
+
+    button {
+      background: none;
+      border: none;
+    }
+    footer {
+      font-size: 0.7rem;
+      text-align: center;
+      margin-top: 2rem;
+      color: #e2a2b8;
+    }
+  </style>
 </head>
 <body>
-
-  <canvas id="bg-canvas"></canvas>
-  <canvas id="confetti-canvas"></canvas>
-
-  <!-- PAGE 1 -->
-  <div id="page1" class="page-view">
-    <div class="hero-content">
-      <div class="bouquet-emoji">💐</div>
-      <h1 class="birthday-title">
-        <span class="line">Happy</span>
-        <span class="line">Birthday</span>
-        <span class="line">Bestie! 🎉</span>
-      </h1>
-      <div class="name-container">
-        <div class="glow-name">You are the best thing that happened to my life.</div>
-        <div class="underline-animation"></div>
-      </div>
-
-      <!-- INBOX on Page 1: random message will appear here -->
-      <div id="inbox-p1" class="inbox-message pacifico-message"></div>
-
-      <button id="nextBtn" class="next-btn">Next ✨</button>
+<div class="birthday-journey">
+  <!-- ========== PAGE 1 : INBOX + TYPEWRITER SEQUENCE ========== -->
+  <div class="page page-1">
+    <div class="page-header">
+      <span>📬</span>
+      <h2>Birthday Inbox</h2>
     </div>
-  </div>
-
-  <!-- PAGE 2 -->
-  <div id="page2" class="page-view hidden">
-    <div class="message-content">
-      <div class="message-card">
-        <div class="big-emoji">💐✨</div>
-        <h1 class="message-title">🌟 To My Dearest Best Friend 🌟</h1>
-        <!-- INBOX on Page 2: three paragraphs (random order) will appear here -->
-        <div id="inbox-p2">
-          <p id="p2-line1" class="heartfelt-text pacifico-message"></p>
-          <p id="p2-line2" class="heartfelt-text pacifico-message"></p>
-          <p id="p2-line3" class="heartfelt-text pacifico-message"></p>
-        </div>
-        <div class="signature">With all my heart — Your Best Friend 🤍</div>
-        <button id="backHome" class="back-home">🎈 Back to Celebration 🎈</button>
+    <div class="inbox-card">
+      <div class="inbox-icon">
+        <span>✉️</span> <span>✨ new message</span>
+      </div>
+      <!-- dynamic typewriter messages will appear here -->
+      <div id="inboxTypewriterArea" class="typewriter-area">
+        <!-- first typed line + second typed line will be injected -->
+      </div>
+      <div class="floating-heart">
+        💌 double typewriter magic
       </div>
     </div>
   </div>
 
-  <audio id="pop-sound" preload="auto">
-    <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg">
-  </audio>
+  <!-- ========== PAGE 2 : ORIGINALLY 3 PARAGRAPHS → AFTER REMOVAL ONLY P1 REMAINS ========== -->
+  <div class="page page-2">
+    <div class="page-header">
+      <span>🎂</span>
+      <h2>Birthday Page 2</h2>
+    </div>
+    <div id="page2Wishes" class="wishes-container">
+      <!-- THREE PARAGRAPHS AS ORIGINAL (they will be trimmed to only first <p>) -->
+      <p>🎈 P1 - Happy Birthday! May your day sparkle with joy and laughter! ✨</p>
+      <p>🎁 P2 - Another year of amazing memories & adventures! 🚀</p>
+      <p>🌸 P3 - Sending you warm hugs and sweetest wishes today ❤️</p>
+    </div>
+    <div class="floating-heart">
+      🧁 only the first wish remains (extra removed)
+    </div>
+  </div>
+</div>
+<footer>✨ typewriter first → second appears magically | page 2: only P1 preserved</footer>
 
-  <script src="script.js"></script>
+<script>
+  // ========== JAVASCRIPT: TYPEWRITER SEQUENCE + PAGE 2 FIX (REMOVE EXTRA P) ==========
+
+  (function() {
+    // ---------- 1. PAGE 2: remove extra paragraphs so only first <p> remains ----------
+    const page2Container = document.getElementById('page2Wishes');
+    if (page2Container) {
+      // Get all paragraph elements inside the wishes container
+      const allParagraphs = page2Container.querySelectorAll('p');
+      if (allParagraphs.length > 1) {
+        // Keep only the first paragraph, remove others
+        for (let i = 1; i < allParagraphs.length; i++) {
+          const extraP = allParagraphs[i];
+          if (extraP && extraP.parentNode) {
+            extraP.parentNode.removeChild(extraP);
+          }
+        }
+      }
+      // Optional: add subtle note class (already reflects design)
+      console.log('[Page2] Extra paragraphs removed — only first <p> remains now.');
+    }
+
+    // ---------- 2. TYPEWRITER LOGIC (SEQUENTIAL: first message, then second small message) ----------
+    // Messages definition:
+    // First main message (birthday inbox style)
+    const firstMessage = "🎉 HAPPY BIRTHDAY! 🎉\nYou've received a special wish inside your inbox. May every moment be as beautiful as your smile! ✨💖";
+    // Second smaller / additional message (auto types after first completes)
+    const secondMessage = "💫 P.S. — You are one in a million! Stay blessed, shine brighter, and eat lots of cake today! 🍰🎂";
+
+    // DOM element where typewriter will be rendered
+    const typewriterContainer = document.getElementById('inboxTypewriterArea');
+    if (!typewriterContainer) return;
+
+    // Clear any placeholder content
+    typewriterContainer.innerHTML = '';
+
+    // Helper: Typewriter effect on a specific DOM element
+    // Parameters:
+    // - element: target HTML element (like div)
+    // - text: full string to type
+    // - speed: ms per character
+    // - onComplete: callback function when typing finishes
+    // - preserveCursorStyle: if true, adds blinking cursor while typing, removes after finish
+    function typeWriterEffect(element, text, speed = 50, onComplete, preserveCursor = true) {
+      let i = 0;
+      // clear any ongoing timer reference to avoid conflicts
+      if (element._typingInterval) clearInterval(element._typingInterval);
+      
+      // reset content (if we want fresh)
+      element.textContent = '';
+      // add class for cursor effect
+      if (preserveCursor) {
+        element.classList.add('typing-cursor');
+      }
+      
+      const interval = setInterval(() => {
+        if (i < text.length) {
+          // append next character
+          element.textContent += text.charAt(i);
+          i++;
+        } else {
+          // typing finished
+          clearInterval(interval);
+          element._typingInterval = null;
+          // remove cursor style after typing
+          if (preserveCursor) {
+            element.classList.remove('typing-cursor');
+            // but keep a stable look: no permanent cursor
+            element.style.borderRight = 'none';
+          }
+          if (onComplete && typeof onComplete === 'function') {
+            onComplete();
+          }
+        }
+      }, speed);
+      
+      // store interval id in element property to avoid collisions (optional)
+      element._typingInterval = interval;
+    }
+
+    // function to start the whole sequential typewriter experience
+    function startSequentialTypewriter() {
+      // Clear container and create two separate line containers
+      typewriterContainer.innerHTML = '';
+      
+      // Create first div that will hold first message
+      const firstLineDiv = document.createElement('div');
+      firstLineDiv.className = 'typed-line';
+      firstLineDiv.style.marginBottom = '1.2rem';
+      firstLineDiv.style.fontWeight = '500';
+      
+      // Create second div for the additional message (will be shown after first completes)
+      const secondLineDiv = document.createElement('div');
+      secondLineDiv.className = 'typed-line';
+      secondLineDiv.style.marginTop = '0.6rem';
+      secondLineDiv.style.fontWeight = '500';
+      secondLineDiv.style.color = '#c96d8a';
+      
+      // Append to container
+      typewriterContainer.appendChild(firstLineDiv);
+      typewriterContainer.appendChild(secondLineDiv);
+      
+      // first message typing on firstLineDiv, then after completion start second typing
+      typeWriterEffect(firstLineDiv, firstMessage, 55, () => {
+        // First message fully typed: now start second message typewriter effect
+        // small extra delay to feel natural
+        setTimeout(() => {
+          typeWriterEffect(secondLineDiv, secondMessage, 50, () => {
+            // optional: both messages done, add a tiny sparkle effect?
+            secondLineDiv.style.transition = '0.2s';
+            secondLineDiv.style.opacity = '1';
+            // Add playful completed note if needed (totally optional)
+            const extraSpark = document.createElement('div');
+            extraSpark.style.fontSize = '0.9rem';
+            extraSpark.style.marginTop = '1rem';
+            extraSpark.style.opacity = '0.75';
+            extraSpark.style.display = 'flex';
+            extraSpark.style.gap = '6px';
+            extraSpark.style.alignItems = 'center';
+            extraSpark.innerHTML = '✨✨ Typewriter complete! ✨✨';
+            extraSpark.style.color = '#e68aae';
+            // Append only if not exists (avoid duplicates)
+            if (!typewriterContainer.querySelector('.completion-badge')) {
+              extraSpark.classList.add('completion-badge');
+              typewriterContainer.appendChild(extraSpark);
+            }
+          });
+        }, 400); // subtle pause before second message starts typing
+      });
+    }
+
+    // Small safety: wait for any background layout shifts, but start after DOM fully ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        startSequentialTypewriter();
+      });
+    } else {
+      startSequentialTypewriter();
+    }
+    
+    // Edge guard: if page 2 paragraphs are removed correctly after dynamic load ?
+    // Since we already removed extra paragraphs synchronously before typewriter starts, it's fine.
+    // Additionally, if any MutationObserver needed but extra removal already executed.
+    
+    // For bulletproof: ensure that page2 has exactly ONE paragraph left (incase some script tries to restore)
+    // but we manually remove above, also re-verify after small delay (defensive)
+    setTimeout(() => {
+      const containerCheck = document.getElementById('page2Wishes');
+      if (containerCheck) {
+        const paragraphs = containerCheck.querySelectorAll('p');
+        if (paragraphs.length !== 1) {
+          // if somehow more than one, keep only first
+          for (let idx = 1; idx < paragraphs.length; idx++) {
+            paragraphs[idx].remove();
+          }
+        }
+      }
+    }, 100);
+  })();
+</script>
 </body>
 </html>
